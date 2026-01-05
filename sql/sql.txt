@@ -1,0 +1,123 @@
+sql01_create_database.sql
+CREATE DATABASE IF NOT EXISTS plataforma_streaming;
+USE plataforma_streaming;
+
+sql02_create_tables.sql
+CREATE TABLE Usuario (
+    id_usuario INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    correo VARCHAR(100),
+    fecha_registro DATE
+);
+
+CREATE TABLE Instructor (
+    id_instructor INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    especialidad VARCHAR(100)
+);
+
+CREATE TABLE Categoria (
+    id_categoria INT PRIMARY KEY,
+    nombre VARCHAR(100)
+);
+
+CREATE TABLE Curso (
+    id_curso INT PRIMARY KEY,
+    titulo VARCHAR(100),
+    id_instructor INT,
+    FOREIGN KEY (id_instructor) REFERENCES Instructor(id_instructor)
+);
+
+CREATE TABLE Curso_Categoria (
+    id_curso INT,
+    id_categoria INT,
+    PRIMARY KEY (id_curso, id_categoria),
+    FOREIGN KEY (id_curso) REFERENCES Curso(id_curso),
+    FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria)
+);
+
+CREATE TABLE Leccion (
+    id_leccion INT PRIMARY KEY,
+    titulo VARCHAR(100),
+    id_curso INT,
+    FOREIGN KEY (id_curso) REFERENCES Curso(id_curso)
+);
+
+CREATE TABLE Visualizacion (
+    id_usuario INT,
+    id_leccion INT,
+    fecha DATE,
+    PRIMARY KEY (id_usuario, id_leccion),
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+    FOREIGN KEY (id_leccion) REFERENCES Leccion(id_leccion)
+);
+
+CREATE TABLE Certificado (
+    id_certificado INT PRIMARY KEY,
+    id_usuario INT,
+    id_curso INT,
+    fecha DATE,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+    FOREIGN KEY (id_curso) REFERENCES Curso(id_curso)
+);
+
+sql03_insert_data.sql
+INSERT INTO Usuario VALUES
+(1,'Ana','ana@mail.com','2024-01-01'),
+(2,'Luis','luis@mail.com','2024-01-02'),
+(3,'Carlos','carlos@mail.com','2024-01-03');
+
+INSERT INTO Instructor VALUES
+(1,'Juan Pérez','Bases de Datos'),
+(2,'María López','Programación');
+
+INSERT INTO Categoria VALUES
+(1,'Tecnología'),
+(2,'Programación');
+
+INSERT INTO Curso VALUES
+(1,'SQL Avanzado',1),
+(2,'Python Básico',2);
+
+INSERT INTO Curso_Categoria VALUES
+(1,1),
+(2,2);
+
+INSERT INTO Leccion VALUES
+(1,'Introducción SQL',1),
+(2,'Consultas Avanzadas',1),
+(3,'Introducción Python',2);
+
+INSERT INTO Visualizacion VALUES
+(1,1,'2024-02-01'),
+(1,2,'2024-02-02'),
+(2,1,'2024-02-03');
+
+INSERT INTO Certificado VALUES
+(1,1,1,'2024-03-01');
+
+
+
+
+📂 sql04_queries.sql 
+-- Consulta 1 Usuarios registrados
+SELECT  FROM Usuario;
+
+-- Consulta 2 Cursos con su instructor
+SELECT c.titulo, i.nombre
+FROM Curso c
+JOIN Instructor i ON c.id_instructor = i.id_instructor;
+
+-- Consulta 3 (División) Cursos donde TODAS sus lecciones fueron vistas
+SELECT c.titulo
+FROM Curso c
+WHERE NOT EXISTS (
+    SELECT l.id_leccion
+    FROM Leccion l
+    WHERE l.id_curso = c.id_curso
+    AND NOT EXISTS (
+        SELECT 
+        FROM Visualizacion v
+        WHERE v.id_leccion = l.id_leccion
+    )
+);

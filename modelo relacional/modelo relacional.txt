@@ -1,0 +1,8 @@
+Usuario(id_usuario PK, nombre, correo, fecha_registro)
+Instructor(id_instructor PK, nombre, especialidad)
+Curso(id_curso PK, titulo, id_instructor FK)
+Categoria(id_categoria PK, nombre)
+Curso_Categoria(id_curso PK/FK, id_categoria PK/FK)
+Leccion(id_leccion PK, titulo, id_curso FK)
+Visualizacion(id_usuario PK/FK, id_leccion PK/FK, fecha)
+Certificado(id_certificado PK, id_usuario FK, id_curso FK, fecha)

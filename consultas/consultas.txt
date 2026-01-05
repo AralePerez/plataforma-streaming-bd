@@ -1,0 +1,34 @@
+consultas/consultas_completas.md
+# Consultas Complejas
+
+## Consulta 1: Usuarios registrados
+
+Álgebra Relacional:
+π_nombre(Usuario)
+
+Cálculo de Tuplas:
+{ u.nombre | Usuario(u) }
+
+Cálculo de Dominios:
+{ n | ∃c,f (Usuario(n,c,f)) }
+
+SQL:
+SELECT nombre FROM Usuario;
+
+---
+
+## Consulta 2: Cursos con instructor
+
+Álgebra Relacional:
+Curso ⨝ Instructor
+
+Cálculo de Tuplas:
+{ c.titulo, i.nombre | Curso(c) ∧ Instructor(i) ∧ c.id_instructor = i.id_instructor }
+
+Cálculo de Dominios:
+{ t,n | ∃i (Curso(t,i) ∧ Instructor(i,n)) }
+
+SQL:
+SELECT c.titulo, i.nombre
+FROM Curso c
+JOIN Instructor i ON c.id_instructor = i.id_instructor;
